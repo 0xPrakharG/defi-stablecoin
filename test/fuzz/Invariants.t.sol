@@ -32,7 +32,6 @@ contract Invariants is StdInvariant, Test {
         deployer = new DeployDSC();
         (dsc, dsce, config) = deployer.run();
         (,, weth, wbtc,) = config.activeNetworkConfig();
-        // targetContract(address(dsce));
         handler = new Handler(dsce, dsc);
         targetContract(address(handler));
         // hey, dont call redeemCollateral, unless there is collateral to redeem
@@ -48,6 +47,26 @@ contract Invariants is StdInvariant, Test {
         uint256 wethValue = dsce.getUsdValue(weth, totalWethDeposited);
         uint256 wbtcValue = dsce.getUsdValue(wbtc, totalWbtcDeposited);
 
+        console.log("Weth Value: %s", wethValue);
+        console.log("Wbtc Value: %s", wbtcValue);
+        console.log("total supply: %s", totalSupply);
+        console.log("Time mint is called: %s", handler.timeMintIsCalled());
+
         assert(wethValue + wbtcValue >= totalSupply);
+    }
+
+    function invariant_gettersShouldNotRevert() public view {
+        dsce.getLiquidationBonus();
+        dsce.getPrecision();
+        dsce.getAdditionalFeedPrecision();
+        dsce.getCollateralTokens();
+        dsce.getDsc();
+        dsce.getLiquidationPrecision();
+        dsce.getLiquidationThreshold();
+        dsce.getMinHealthFactor();
+        // dsce.getTokenAmountFromUsd();
+        // dsce.getCollateralTokenPriceFeed();
+        // dsce.getCollateralBalanceOfUser();
+        // dsce.getAccountCollateralValue();
     }
 }
